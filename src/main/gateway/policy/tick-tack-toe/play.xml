@@ -1,0 +1,127 @@
+<wsp:Policy xmlns:wsp="http://schemas.xmlsoap.org/ws/2002/12/policy" xmlns:L7p="http://www.layer7tech.com/ws/policy">
+    <wsp:All wsp:Usage="Required">
+        <wsp:All wsp:Usage="Required">
+            <L7p:ComparisonAssertion>
+                <L7p:Expression1 stringValue="${request.http.parameter.gid}"/>
+                <L7p:Expression2 stringValue=""/>
+                <L7p:Negate booleanValue="true"/>
+                <L7p:Operator operator="EMPTY"/>
+                <L7p:Predicates predicates="included">
+                    <L7p:item binary="included">
+                        <L7p:Negated booleanValue="true"/>
+                        <L7p:Operator operator="EMPTY"/>
+                        <L7p:RightValue stringValue=""/>
+                    </L7p:item>
+                </L7p:Predicates>
+            </L7p:ComparisonAssertion>
+            <wsp:OneOrMore wsp:Usage="Required">
+                <L7p:CacheLookup>
+                    <L7p:CacheEntryKey stringValue="${request.http.parameter.gid}"/>
+                    <L7p:CacheId stringValue="tick-tack-toe"/>
+                    <L7p:ContentTypeOverride stringValue=""/>
+                    <L7p:MaxEntryAgeSeconds stringValue="3600"/>
+                    <L7p:OtherTargetMessageVariable stringValue="game"/>
+                    <L7p:Target target="OTHER"/>
+                </L7p:CacheLookup>
+                <wsp:All wsp:Usage="Required">
+                    <L7p:SetVariable>
+                        <L7p:Expression><![CDATA[{"board":"         ","turn":"X"}]]></L7p:Expression>
+                        <L7p:ContentType stringValue="text/json; charset=utf-8"/>
+                        <L7p:DataType variableDataType="message"/>
+                        <L7p:VariableToSet stringValue="game"/>
+                    </L7p:SetVariable>
+                </wsp:All>
+            </wsp:OneOrMore>
+        </wsp:All>
+        <L7p:JavaScript>
+            <L7p:ExecutionTimeout stringValue=""/>
+            <L7p:Name stringValue="tick_tack_toe"/>
+            <L7p:Script stringValueReference="inline"><![CDATA[var game = JSON.parse(context.getVariable("game").content);
+
+var winner = whoWon(game.board);
+var error = '';
+if(winner === ' '){
+	error = move(game, context.getVariable("request").parameters['move']);
+}
+
+var message;
+winner = whoWon(game.board);
+if(winner === ' '){
+	message = game.turn + "'s turn";
+} else if(winner === 'N'){
+	message = "Tie Game";
+} else if(winner === 'X'){
+	message = "X Won";
+} else if(winner === 'O'){
+	message = "O Won";
+}
+var response = context.getVariable("response");
+response.setContent(JSON.stringify(game) + "\n" + printBoard(game.board) + "\n" + message + "\n" + error, "text/plain")
+
+context.setVariable("game", game);
+
+function move(game, move) {
+	if(move != null && move >= 0 && move <=8){
+		if(!(game.board.charAt(move) === ' ')) {
+			return "Invalid move, already token at location: " + move;
+		}
+		game.board = replaceAt(game.board, move, game.turn);
+		if(game.turn === 'X'){
+			game.turn = 'O';
+		} else {
+			game.turn = 'X';
+		}
+		return ''
+	} else {
+		return "Invalid move, must be a munber between 0 and 8"
+	}
+}
+
+function replaceAt(str, index, replacement) {
+    var tailIndex = parseInt(index) + 1;
+    logger.log(LOG_LEVEL.INFO, "str='" + str + "' index='" + index + "' '" + str.substr(tailIndex) + "' lsub=" + (tailIndex));
+    return str.substr(0, index).concat(replacement, str.substr(tailIndex));
+}
+
+function whoWon(board){
+	if((board.charAt(0) === board.charAt(1)) && (board.charAt(0) === board.charAt(2)) && !(board.charAt(0) ===' ')){
+		return board.charAt(0);
+	} else if((board.charAt(3) === board.charAt(4)) && (board.charAt(3) === board.charAt(5)) && !(board.charAt(3) ===' ')){
+		return board.charAt(3);
+	} else if((board.charAt(6) === board.charAt(7)) && (board.charAt(6) === board.charAt(8)) && !(board.charAt(6) ===' ')){
+		return board.charAt(6);
+	} else if((board.charAt(0) === board.charAt(3)) && (board.charAt(0) === board.charAt(6)) && !(board.charAt(0) ===' ')){
+		return board.charAt(0);
+	} else if((board.charAt(1) === board.charAt(4)) && (board.charAt(1) === board.charAt(7)) && !(board.charAt(1) ===' ')){
+		return board.charAt(1);
+	} else if((board.charAt(2) === board.charAt(5)) && (board.charAt(2) === board.charAt(8)) && !(board.charAt(2) ===' ')){
+		return board.charAt(2);
+	} else if((board.charAt(0) === board.charAt(4)) && (board.charAt(0) === board.charAt(8)) && !(board.charAt(0) ===' ')){
+		return board.charAt(0);
+	} else if((board.charAt(2) === board.charAt(4)) && (board.charAt(2) === board.charAt(6)) && !(board.charAt(2) ===' ')){
+		return board.charAt(2);
+	} else if(board.contains(' ')){
+		return ' ';
+	}
+	return 'N'
+}
+
+function printBoard(board){
+	var prettyBoard = board.charAt(0) + '|' + board.charAt(1) + '|' + board.charAt(2) + '\n';
+	prettyBoard += '-----\n';
+	prettyBoard += board.charAt(3) + '|' + board.charAt(4) + '|' + board.charAt(5) + '\n';
+	prettyBoard += '-----\n';
+	prettyBoard += board.charAt(6) + '|' + board.charAt(7) + '|' + board.charAt(8);
+	return prettyBoard;
+}]]></L7p:Script>
+        </L7p:JavaScript>
+        <L7p:CacheStorage>
+            <L7p:CacheEntryKey stringValue="${request.http.parameter.gid}"/>
+            <L7p:CacheId stringValue="tick-tack-toe"/>
+            <L7p:MaxEntries stringValue="100"/>
+            <L7p:MaxEntryAgeSeconds stringValue="3600"/>
+            <L7p:OtherTargetMessageVariable stringValue="game"/>
+            <L7p:Target target="OTHER"/>
+        </L7p:CacheStorage>
+    </wsp:All>
+</wsp:Policy>

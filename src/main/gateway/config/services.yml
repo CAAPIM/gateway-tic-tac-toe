@@ -1,0 +1,9 @@
+tick-tack-toe/play:
+  url: "/play"
+  policy: "tick-tack-toe/play.xml"
+  httpMethods:
+  - "DELETE"
+  - "POST"
+  - "GET"
+  - "PUT"
+  properties: {}

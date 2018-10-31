@@ -1,0 +1,36 @@
+/*
+ * Copyright (c) 2018 CA. All rights reserved.
+ * This software may be modified and distributed under the terms
+ * of the MIT license.  See the LICENSE file for details.
+ */
+
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "com.ca.apim.gateway:gateway-developer-plugin:0.6.19"
+        classpath "com.ca.apim.gateway:gateway-export-plugin:0.6.19"
+    }
+}
+
+apply plugin: 'com.ca.apim.gateway.gateway-export-plugin'
+apply plugin: 'com.ca.apim.gateway.gateway-developer-plugin'
+
+group 'com.ca.apim.gateway'
+version = '1.0.0'
+
+GatewayConnection {
+    url = 'https://localhost:8443/restman'
+    folderPath = '/tick-tack-toe'
+}
+
+repositories {
+    jcenter()
+}
+
+wrapper {
+    gradleVersion = '4.10'
+}
