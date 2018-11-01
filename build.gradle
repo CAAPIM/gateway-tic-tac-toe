@@ -24,7 +24,7 @@ version = '1.0.0'
 
 GatewayConnection {
     url = 'https://localhost:8443/restman'
-    folderPath = '/tick-tack-toe'
+    folderPath = '/tic-tac-toe'
 }
 
 repositories {

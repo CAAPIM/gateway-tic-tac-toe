@@ -4,10 +4,10 @@
 
 version: '3.4'
 services:
-  gateway-tick-tack-toe:
+  gateway-tic-tac-toe:
     hostname: localhost
     build: .
-    image: gateway-tick-tack-toe
+    image: gateway-tic-tac-toe
     ports:
       - "8080:8080"
       - "8443:8443"

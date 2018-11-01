@@ -42,7 +42,7 @@
                 <wsp:OneOrMore wsp:Usage="Required">
                     <L7p:CacheLookup>
                         <L7p:CacheEntryKey stringValue="${request.http.parameter.gid}"/>
-                        <L7p:CacheId stringValue="tick-tack-toe"/>
+                        <L7p:CacheId stringValue="tic-tac-toe"/>
                         <L7p:ContentTypeOverride stringValue=""/>
                         <L7p:MaxEntryAgeSeconds stringValue="3600"/>
                         <L7p:OtherTargetMessageVariable stringValue="game"/>
@@ -59,7 +59,7 @@
                 </wsp:OneOrMore>
                 <L7p:JavaScript>
                     <L7p:ExecutionTimeout stringValue=""/>
-                    <L7p:Name stringValue="tick_tack_toe"/>
+                    <L7p:Name stringValue="tic-tac-toe"/>
                     <L7p:Script stringValueReference="inline"><![CDATA[var game = JSON.parse(context.getVariable("game").content);
 
 var winner = whoWon(game.board);
@@ -145,7 +145,7 @@ function printBoard(board){
                 </L7p:JavaScript>
                 <L7p:CacheStorage>
                     <L7p:CacheEntryKey stringValue="${request.http.parameter.gid}"/>
-                    <L7p:CacheId stringValue="tick-tack-toe"/>
+                    <L7p:CacheId stringValue="tic-tac-toe"/>
                     <L7p:MaxEntries stringValue="100"/>
                     <L7p:MaxEntryAgeSeconds stringValue="3600"/>
                     <L7p:OtherTargetMessageVariable stringValue="game"/>
