@@ -1,42 +1,66 @@
 <wsp:Policy xmlns:wsp="http://schemas.xmlsoap.org/ws/2002/12/policy" xmlns:L7p="http://www.layer7tech.com/ws/policy">
     <wsp:All wsp:Usage="Required">
-        <wsp:All wsp:Usage="Required">
-            <L7p:ComparisonAssertion>
-                <L7p:Expression1 stringValue="${request.http.parameter.gid}"/>
-                <L7p:Expression2 stringValue=""/>
-                <L7p:Negate booleanValue="true"/>
-                <L7p:Operator operator="EMPTY"/>
-                <L7p:Predicates predicates="included">
-                    <L7p:item binary="included">
-                        <L7p:Negated booleanValue="true"/>
-                        <L7p:Operator operator="EMPTY"/>
-                        <L7p:RightValue stringValue=""/>
-                    </L7p:item>
-                </L7p:Predicates>
-            </L7p:ComparisonAssertion>
-            <wsp:OneOrMore wsp:Usage="Required">
-                <L7p:CacheLookup>
-                    <L7p:CacheEntryKey stringValue="${request.http.parameter.gid}"/>
-                    <L7p:CacheId stringValue="tick-tack-toe"/>
-                    <L7p:ContentTypeOverride stringValue=""/>
-                    <L7p:MaxEntryAgeSeconds stringValue="3600"/>
-                    <L7p:OtherTargetMessageVariable stringValue="game"/>
-                    <L7p:Target target="OTHER"/>
-                </L7p:CacheLookup>
-                <wsp:All wsp:Usage="Required">
-                    <L7p:SetVariable>
-                        <L7p:Expression><![CDATA[{"board":"         ","turn":"X"}]]></L7p:Expression>
-                        <L7p:ContentType stringValue="text/json; charset=utf-8"/>
-                        <L7p:DataType variableDataType="message"/>
-                        <L7p:VariableToSet stringValue="game"/>
-                    </L7p:SetVariable>
-                </wsp:All>
-            </wsp:OneOrMore>
-        </wsp:All>
-        <L7p:JavaScript>
-            <L7p:ExecutionTimeout stringValue=""/>
-            <L7p:Name stringValue="tick_tack_toe"/>
-            <L7p:Script stringValueReference="inline"><![CDATA[var game = JSON.parse(context.getVariable("game").content);
+        <wsp:OneOrMore wsp:Usage="Required">
+            <wsp:All wsp:Usage="Required">
+                <L7p:ComparisonAssertion>
+                    <L7p:CaseSensitive booleanValue="false"/>
+                    <L7p:Expression1 stringValue="${request.http.parameter.gid}"/>
+                    <L7p:Expression2 stringValue=""/>
+                    <L7p:ExpressionIsVariable booleanValue="false"/>
+                    <L7p:Operator operator="EMPTY"/>
+                    <L7p:Predicates predicates="included">
+                        <L7p:item binary="included">
+                            <L7p:CaseSensitive booleanValue="false"/>
+                            <L7p:Operator operator="EMPTY"/>
+                            <L7p:RightValue stringValue=""/>
+                        </L7p:item>
+                    </L7p:Predicates>
+                </L7p:ComparisonAssertion>
+                <L7p:AddHeader>
+                    <L7p:HeaderName stringValue="Location"/>
+                    <L7p:HeaderValue stringValue="/play?gid=${gateway.random.8}"/>
+                    <L7p:Target target="RESPONSE"/>
+                </L7p:AddHeader>
+                <L7p:HardcodedResponse>
+                    <L7p:ResponseStatus stringValue="302"/>
+                </L7p:HardcodedResponse>
+            </wsp:All>
+            <wsp:All wsp:Usage="Required">
+                <L7p:ComparisonAssertion>
+                    <L7p:Expression1 stringValue="${request.http.parameter.gid}"/>
+                    <L7p:Expression2 stringValue=""/>
+                    <L7p:Negate booleanValue="true"/>
+                    <L7p:Operator operator="EMPTY"/>
+                    <L7p:Predicates predicates="included">
+                        <L7p:item binary="included">
+                            <L7p:Negated booleanValue="true"/>
+                            <L7p:Operator operator="EMPTY"/>
+                            <L7p:RightValue stringValue=""/>
+                        </L7p:item>
+                    </L7p:Predicates>
+                </L7p:ComparisonAssertion>
+                <wsp:OneOrMore wsp:Usage="Required">
+                    <L7p:CacheLookup>
+                        <L7p:CacheEntryKey stringValue="${request.http.parameter.gid}"/>
+                        <L7p:CacheId stringValue="tick-tack-toe"/>
+                        <L7p:ContentTypeOverride stringValue=""/>
+                        <L7p:MaxEntryAgeSeconds stringValue="3600"/>
+                        <L7p:OtherTargetMessageVariable stringValue="game"/>
+                        <L7p:Target target="OTHER"/>
+                    </L7p:CacheLookup>
+                    <wsp:All wsp:Usage="Required">
+                        <L7p:SetVariable>
+                            <L7p:Expression><![CDATA[{"board":"         ","turn":"X"}]]></L7p:Expression>
+                            <L7p:ContentType stringValue="text/json; charset=utf-8"/>
+                            <L7p:DataType variableDataType="message"/>
+                            <L7p:VariableToSet stringValue="game"/>
+                        </L7p:SetVariable>
+                    </wsp:All>
+                </wsp:OneOrMore>
+                <L7p:JavaScript>
+                    <L7p:ExecutionTimeout stringValue=""/>
+                    <L7p:Name stringValue="tick_tack_toe"/>
+                    <L7p:Script stringValueReference="inline"><![CDATA[var game = JSON.parse(context.getVariable("game").content);
 
 var winner = whoWon(game.board);
 var error = '';
@@ -56,7 +80,7 @@ if(winner === ' '){
 	message = "O Won";
 }
 var response = context.getVariable("response");
-response.setContent(message + "\n" + error + "\n\n" + context.getVariable("gateway.instructions"), "text/plain")
+response.setContent(printBoard(game.board) + "\n" + message + "\n" + error + "\n\n" + context.getVariable("gateway.instructions"), "text/plain")
 
 context.setVariable("game", game);
 
@@ -118,14 +142,16 @@ function printBoard(board){
 	prettyBoard += board.charAt(6) + '|' + board.charAt(7) + '|' + board.charAt(8);
 	return prettyBoard;
 }]]></L7p:Script>
-        </L7p:JavaScript>
-        <L7p:CacheStorage>
-            <L7p:CacheEntryKey stringValue="${request.http.parameter.gid}"/>
-            <L7p:CacheId stringValue="tick-tack-toe"/>
-            <L7p:MaxEntries stringValue="100"/>
-            <L7p:MaxEntryAgeSeconds stringValue="3600"/>
-            <L7p:OtherTargetMessageVariable stringValue="game"/>
-            <L7p:Target target="OTHER"/>
-        </L7p:CacheStorage>
+                </L7p:JavaScript>
+                <L7p:CacheStorage>
+                    <L7p:CacheEntryKey stringValue="${request.http.parameter.gid}"/>
+                    <L7p:CacheId stringValue="tick-tack-toe"/>
+                    <L7p:MaxEntries stringValue="100"/>
+                    <L7p:MaxEntryAgeSeconds stringValue="3600"/>
+                    <L7p:OtherTargetMessageVariable stringValue="game"/>
+                    <L7p:Target target="OTHER"/>
+                </L7p:CacheStorage>
+            </wsp:All>
+        </wsp:OneOrMore>
     </wsp:All>
 </wsp:Policy>
