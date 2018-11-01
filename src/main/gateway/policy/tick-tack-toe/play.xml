@@ -56,7 +56,7 @@ if(winner === ' '){
 	message = "O Won";
 }
 var response = context.getVariable("response");
-response.setContent(JSON.stringify(game) + "\n" + printBoard(game.board) + "\n" + message + "\n" + error, "text/plain")
+response.setContent(message + "\n" + error + "\n\n" + context.getVariable("gateway.instructions"), "text/plain")
 
 context.setVariable("game", game);
 
@@ -72,15 +72,19 @@ function move(game, move) {
 			game.turn = 'X';
 		}
 		return ''
-	} else {
-		return "Invalid move, must be a munber between 0 and 8"
+	} else if(move != null) {
+		return "Invalid move, must be a number between 0 and 8"
 	}
 }
 
 function replaceAt(str, index, replacement) {
     var tailIndex = parseInt(index) + 1;
-    logger.log(LOG_LEVEL.INFO, "str='" + str + "' index='" + index + "' '" + str.substr(tailIndex) + "' lsub=" + (tailIndex));
-    return str.substr(0, index).concat(replacement, str.substr(tailIndex));
+    var firstPart = str.substr(0, index).concat(replacement);
+    if(str.substr(tailIndex)>8) {
+        return firstPart;
+    } else {
+        return firstPart.concat(str.substr(tailIndex));
+    }
 }
 
 function whoWon(board){
