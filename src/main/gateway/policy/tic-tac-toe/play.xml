@@ -98,7 +98,9 @@ function move(game, move) {
 		return ''
 	} else if(move != null) {
 		return "Invalid move, must be a number between 0 and 8"
-	}
+	} else {
+	    return '';
+    }
 }
 
 function replaceAt(str, index, replacement) {

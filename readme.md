@@ -7,12 +7,15 @@ Before getting started, you must copy CA API Gateway license file to `./docker/l
 ## Starting Docker containers
 To start the Docker containers, run the following command:
 
-`docker-compose up`
+`docker-compose up --build`
 
 ## Stopping Docker containers
 To stop the running Docker container, run the following command:
 
 `docker-compose  down`
+
+# Playing the Game
+In order to play Tic-Tac-Toe, after the gateway has started navigate to [http://localhost:8080/play](http://localhost:8080/play)
 
 # Managing the Gateway Configuration
 The gateway configuration is managed and built using the [gateway-developer-plugin](https://github.com/ca-api-gateway/gateway-developer-plugin).
