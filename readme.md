@@ -1,5 +1,5 @@
 # About
-This repository contains a service that implements a simple web-based tic-tac-toe game using a Gateway.
+This repository contains a Gateway that implements a simple web-based tic-tac-toe game using a Gateway. It demonstrates the use of the JavaScript and the Cache assertions.
 
 # Getting Started
 Before getting started, you must copy CA API Gateway license file to `./docker/license.xml`.
