@@ -2,7 +2,7 @@
 This repository contains a Gateway that implements a simple web-based tic-tac-toe game using a Gateway. It demonstrates the use of the JavaScript and the Cache assertions.
 
 # Getting Started
-Before getting started, you must copy CA API Gateway license file to `./docker/license.xml`.
+Before getting started, you must copy CA API Gateway license file to `./docker/license.xml`. For information on getting a license see the [License Section from the Gateway Container readme](https://hub.docker.com/r/caapim/gateway/).
 
 ## Starting Docker containers
 To start the Docker containers, run the following command:
