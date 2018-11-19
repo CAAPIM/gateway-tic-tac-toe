@@ -2,7 +2,7 @@
 FROM gradle:4.10 as builder
 COPY --chown=gradle:gradle . /home/gradle/src
 WORKDIR /home/gradle/src
-RUN gradle build
+RUN gradle --no-daemon build
 
 FROM caapim/gateway:9.4.00
 # Copying the deployment package to the Gateway image

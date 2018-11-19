@@ -1,6 +1,6 @@
 tic-tac-toe/play:
   url: "/play"
-  policy: "tic-tac-toe/play.xml"
+  policy: "tic-tac-toe/play"
   httpMethods:
   - "DELETE"
   - "POST"
